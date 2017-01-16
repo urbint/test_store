@@ -9,7 +9,7 @@ by adding `test_store` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:test_store, "~> 0.1.0"}]
+  [{:test_store, "https://github.com/urbint/test_store.git"}, only: [:dev, :test]]
 end
 ```
 
