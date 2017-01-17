@@ -13,10 +13,12 @@ defmodule TestStore.Store do
 
   # GenServer init callback function taking an empty list as an argument.
   def init([]) do
-    case :dets.open_file(@file_path, ram_file: true) do
-      {:ok, table} ->
-        {:ok, table}
-
+    with(
+    {:ok, table} <- :dets.open_file(@file_path),
+     :dets.close(table)
+    ) do
+      :dets.open_file(@file_path, ram_file: true)
+    else
       {:error, reason} ->
         {:stop, reason}
     end
