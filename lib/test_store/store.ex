@@ -14,15 +14,7 @@ defmodule TestStore.Store do
     path =
       file_path()
 
-    with(
-    {:ok, table} <- :dets.open_file(path, []),
-     :dets.close(table)
-    ) do
-      :dets.open_file(path, ram_file: true)
-    else
-      {:error, reason} ->
-        {:stop, reason}
-    end
+    :dets.open_file(path, [])
   end
 
   # GenServer terminate callback
