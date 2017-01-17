@@ -4,8 +4,6 @@ defmodule TestStore.Store do
   use Application
   use GenServer
 
-  @file_path Application.get_env(:test_store, :file_path, "test/test_store.dets")
-
   # Application callback function taking an empty list as an argument
   def start(_type, _args) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
@@ -13,11 +11,14 @@ defmodule TestStore.Store do
 
   # GenServer init callback function taking an empty list as an argument.
   def init([]) do
+    path =
+      file_path()
+
     with(
-    {:ok, table} <- :dets.open_file(@file_path),
+    {:ok, table} <- :dets.open_file(path),
      :dets.close(table)
     ) do
-      :dets.open_file(@file_path, ram_file: true)
+      :dets.open_file(path, ram_file: true)
     else
       {:error, reason} ->
         {:stop, reason}
@@ -56,5 +57,9 @@ defmodule TestStore.Store do
       :dets.delete(table, key)
 
     {:reply, resp, table}
+  end
+
+  defp file_path do
+    Application.get_env(:test_store, :file_path, "test/test_store.dets")
   end
 end
